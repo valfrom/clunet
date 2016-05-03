@@ -7,6 +7,11 @@ PROGRAMMER_TYPE = avrisp2
 PROGRAMMER_PORT = usb
 BOOTSTART = 0x1C00
 
+PORT=`ls /dev/tty.usbmodem*`
+AVRDUDE=/Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avrdude
+CONF=/Applications/Arduino.app/Contents/Java/hardware/tools/avr/etc/avrdude.conf
+PROGRAMMER=-cstk500v1 -P $(PORT) -b19200
+
 #MCU_TARGET     = at90s2313
 #MCU_TARGET     = at90s2333
 #MCU_TARGET     = at90s4414
@@ -40,7 +45,7 @@ BOOTSTART = 0x1C00
 #MCU_TARGET     = atmega6450
 #MCU_TARGET     = atmega649
 #MCU_TARGET     = atmega6490
-MCU_TARGET     = atmega8
+MCU_TARGET     = atmega328p
 #MCU_TARGET     = atmega8515
 #MCU_TARGET     = atmega8535
 #MCU_TARGET     = atmega88
@@ -62,7 +67,7 @@ LIBS           =
 
 # You should not have to change anything below here.
 
-CC             = avr-gcc
+CC             = /Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-gcc
 
 # Override is only needed by avr-lib build system.
 
@@ -71,8 +76,8 @@ LDFLAGS       = -Wl,-Map,$(PRG).map
 #override LDFLAGS       =  -Wl,--section-start=.text=$(BOOTSTART)
 LDFLAGS += -Wl,--section-start=.text=$(BOOTSTART)
 
-OBJCOPY        = avr-objcopy
-OBJDUMP        = avr-objdump
+OBJCOPY        = /Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-objcopy
+OBJDUMP        = /Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-objdump
 
 all: $(PRG).elf lst text eeprom
 

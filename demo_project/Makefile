@@ -4,6 +4,11 @@ LFUSE          = E4
 HFUSE          = D9
 MCU_PROGRAMMER = m8
 
+PORT=`ls /dev/tty.usbmodem*`
+AVRDUDE=/Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avrdude
+CONF=/Applications/Arduino.app/Contents/Java/hardware/tools/avr/etc/avrdude.conf
+PROGRAMMER=-cstk500v1 -P $(PORT) -b19200
+
 CLUNET_PATH		 = ..
 CLUNET_FLASHER = D:/Soft/Soft/clunetflasher/clunetflasher.exe
 CLUNET_IP      = 10.13.0.254
@@ -43,7 +48,7 @@ CLUNET_DEVICE_ID = 99
 #MCU_TARGET     = atmega6450
 #MCU_TARGET     = atmega649
 #MCU_TARGET     = atmega6490
-MCU_TARGET     = atmega8
+MCU_TARGET     = atmega328p
 #MCU_TARGET     = atmega8515
 #MCU_TARGET     = atmega8535
 #MCU_TARGET     = atmega88
@@ -65,15 +70,15 @@ LIBS           = $(CLUNET_PATH)/clunet.c
 
 # You should not have to change anything below here.
 
-CC             = avr-gcc
+CC             = /Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-gcc
 
 # Override is only needed by avr-lib build system.
 
 override CFLAGS        = -g -Wall $(OPTIMIZE) -mmcu=$(MCU_TARGET) $(DEFS) -I. -I$(CLUNET_PATH)
 override LDFLAGS       = -Wl,-Map,$(PRG).map
 
-OBJCOPY        = avr-objcopy
-OBJDUMP        = avr-objdump
+OBJCOPY        = /Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-objcopy
+OBJDUMP        = /Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-objdump
 
 all: $(PRG).elf lst text eeprom
 
@@ -152,4 +157,4 @@ pdf: $(PRG).pdf
 
 program: hex
 #	$(CLUNET_FLASHER) $(CLUNET_IP) $(CLUNET_PORT) $(CLUNET_DEVICE_ID) $(PRG).hex
-	avrdude -V -p $(MCU_PROGRAMMER) -c avrisp2 -P usb -U flash:w:$(PRG).hex -U lfuse:w:0x$(LFUSE):m -U hfuse:w:0x$(HFUSE):m
+	$(AVRDUDE) -C $(CONF) -p $(CPU) $(PROGRAMMER) -U flash:w:$(PRG).hex -U lfuse:w:0x$(LFUSE):m -U hfuse:w:0x$(HFUSE):m

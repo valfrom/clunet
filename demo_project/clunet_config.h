@@ -5,8 +5,10 @@
  * License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
  */
  
- #ifndef __clunet_config_h_included__
+#ifndef __clunet_config_h_included__
 #define __clunet_config_h_included__
+
+ //#define ATMEGA8
 
 /* Device address (0-254) */
 #define CLUNET_DEVICE_ID 99
@@ -39,25 +41,24 @@
  //#define CLUNET_T 8
 
 /* Timer initialization */
-#define CLUNET_TIMER_INIT {unset_bit4(TCCR2, WGM21, WGM20, COM21, COM20); /* Timer2, normal mode */ \
-	set_bit(TCCR2, CS22); unset_bit2(TCCR2, CS21, CS20); /* 64x prescaler */ }
+#define CLUNET_TIMER_INIT {unset_bit4(TCCR2A, WGM21, WGM20, COM2A1, COM2A0); /* Timer2, normal mode */ \
+	set_bit(TCCR2B, CS22); unset_bit2(TCCR2B, CS21, CS20); /* 64x prescaler */ }
 
 /* Timer registers */
 #define CLUNET_TIMER_REG TCNT2
-#define CLUNET_TIMER_REG_OCR OCR2
+#define CLUNET_TIMER_REG_OCR OCR2A
 
 /* How to enable and disable timer interrupts */
-#define CLUNET_ENABLE_TIMER_COMP set_bit(TIMSK, OCIE2)
-#define CLUNET_DISABLE_TIMER_COMP unset_bit(TIMSK, OCIE2)
-#define CLUNET_ENABLE_TIMER_OVF set_bit(TIMSK, TOIE2)
-#define CLUNET_DISABLE_TIMER_OVF unset_bit(TIMSK, TOIE2)
-
-/* How to init and enable external interrupt (read pin) */
-#define CLUNET_INIT_INT {set_bit(MCUCR,ISC00);unset_bit(MCUCR,ISC01); set_bit(GICR, INT0);}
+#define CLUNET_ENABLE_TIMER_COMP set_bit(TIMSK2, OCIE2A)
+#define CLUNET_DISABLE_TIMER_COMP unset_bit(TIMSK2, OCIE2A)
+#define CLUNET_ENABLE_TIMER_OVF set_bit(TIMSK2, TOIE1)
+#define CLUNET_DISABLE_TIMER_OVF unset_bit(TIMSK2, TOIE1)
 
 /* Interrupt vectors */
-#define CLUNET_TIMER_COMP_VECTOR TIMER2_COMP_vect
+#define CLUNET_TIMER_COMP_VECTOR TIMER2_COMPA_vect
 #define CLUNET_TIMER_OVF_VECTOR TIMER2_OVF_vect
 #define CLUNET_INT_VECTOR INT0_vect
+
+ #define CLUNET_INIT_INT {EICRA = (EICRA & ~((1 << ISC00) | (1 << ISC01))) | (1 << ISC00); EIMSK |= (1 << INT0); }
 
 #endif

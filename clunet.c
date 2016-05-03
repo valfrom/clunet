@@ -175,9 +175,11 @@ inline void clunet_data_received(unsigned char src_address, unsigned char dst_ad
 
 	if (command == CLUNET_COMMAND_REBOOT) // Просто ребут. И да, ребутнуть себя мы можем
 	{
+		#ifdef ATMEGA8
 		cli();
 		set_bit(WDTCR, WDE);
 		while(1);
+		#endif
 	}
 
 	if ((clunetSendingState == CLUNET_SENDING_STATE_IDLE) || (clunetCurrentPrio <= CLUNET_PRIORITY_MESSAGE))
@@ -303,9 +305,17 @@ void clunet_init()
 	CLUNET_ENABLE_INT;
 #warning CLUNET_ENABLE_INT is deprecated
 #endif	
+#ifdef ATMEGA8	
 	char reset_source = MCUCSR;
+#else
+	char reset_source = MCUSR;
+#endif
 	clunet_send(CLUNET_BROADCAST_ADDRESS, CLUNET_PRIORITY_MESSAGE,	CLUNET_COMMAND_BOOT_COMPLETED, &reset_source, 1);
+#ifdef ATMEGA8	
 	MCUCSR = 0;
+#else
+	MCUSR = 0;
+#endif	
 }
 
 int clunet_ready_to_send() // Возвращает 0, если готов к передаче, иначе приоритет текущей задачи
